@@ -10,14 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libvgx.h"
+#include "fdf.h"
+#include "libvgx/libvgx.h"
 
-void	ft_image_put_pixel(int *img_data, int x, int y, int color)
+void	ft_image_put_pixel(t_fdf *fdf, int x, int y, int color)
 {
 	int	pos;
 
 	pos = x + y * SCREEN_W;
 	if (pos > SCREEN_W * SCREEN_H || pos < 0)
 		return ;
-	img_data[pos] = color;
+	(fdf->img_data)[pos] = color;
 }

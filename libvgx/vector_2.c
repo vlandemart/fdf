@@ -18,6 +18,7 @@ t_vector_2		ft_vector_2_new(float x, float y)
 
 	new_vector_2.x = x;
 	new_vector_2.y = y;
+	new_vector_2.color = 0;
 	return (new_vector_2);
 }
 
@@ -27,6 +28,7 @@ t_vector_2_int	ft_vector_2_int_new(int x, int y)
 
 	new_vector_2.x = x;
 	new_vector_2.y = y;
+	new_vector_2.color = 0;
 	return (new_vector_2);
 }
 
@@ -36,5 +38,6 @@ t_vector_2_int	ft_vector_3_to_2_int(t_vector_3 v3)
 
 	v2.x = (int)v3.x;
 	v2.y = (int)v3.y;
+	v2.color = v3.color;
 	return (v2);
 }

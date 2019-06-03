@@ -12,7 +12,7 @@
 
 NAME		= cube3d
 CFLAGS		= -g -Wall -Werror -Wextra
-FILES		= main.c read_map.c
+FILES		= main.c read_map.c line.c mlx_image.c
 LIBMLX		= /usr/local/lib -lmlx
 LIBVGX		= ./libvgx -lvgx
 LIBFT		= ./libft -lft

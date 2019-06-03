@@ -20,7 +20,24 @@
 # include <fcntl.h>
 # include <unistd.h>
 
-void	add_triangle_to_mesh(t_triangle tri);
-void	read_map(char *map_name);
+typedef struct	s_fdf
+{
+	void		*mlx;
+	void		*win;
+	void		*img_main;
+	int			*img_data;
+	t_vector_3	map_pos;
+	t_vector_3	map_rot;
+	t_list		*vertices;
+	t_list		*vertices_to_draw;
+	int			map_h;
+	int			map_w;
+}				t_fdf;
+
+
+void			read_map(char *map_name, t_fdf *fdf);
+void			ft_image_put_pixel(t_fdf *fdf, int x, int y, int color);
+void			output_line(t_vector_2_int p0, t_vector_2_int p1,
+							t_fdf *fdf, int col1, int col2);
 
 #endif

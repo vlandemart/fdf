@@ -55,25 +55,6 @@ t_triangle	ft_triangle_add_v3(t_triangle tri, t_vector_3 v)
 	return (tri);
 }
 
-/*
-** draws a line on 2d screen between all points of a triangle
-** input: triangle with screen projected coordinates
-*/
-
-void		output_triangle(t_triangle tri, int *img_data, int color)
-{
-	t_vector_2_int pos1;
-	t_vector_2_int pos2;
-
-	pos1 = ft_vector_3_to_2_int(tri.p[0]);
-	pos2 = ft_vector_3_to_2_int(tri.p[1]);
-	output_line(pos1, pos2, img_data, color);
-	pos1 = ft_vector_3_to_2_int(tri.p[2]);
-	output_line(pos1, pos2, img_data, color);
-	pos2 = ft_vector_3_to_2_int(tri.p[0]);
-	output_line(pos1, pos2, img_data, color);
-}
-
 t_triangle	triangle_from_list(t_list *lst)
 {
 	t_triangle result;
@@ -82,17 +63,4 @@ t_triangle	triangle_from_list(t_list *lst)
 	result.p[1] = ((t_triangle*)lst->content)->p[1];
 	result.p[2] = ((t_triangle*)lst->content)->p[2];
 	return (result);
-}
-
-void		output_fdf(t_triangle tri, int *img_data, int color)
-{
-	t_vector_2_int pos1;
-	t_vector_2_int pos2;
-	t_vector_2_int pos3;
-
-	pos1 = ft_vector_3_to_2_int(tri.p[0]);
-	pos2 = ft_vector_3_to_2_int(tri.p[1]);
-	pos3 = ft_vector_3_to_2_int(tri.p[2]);
-	output_line(pos1, pos2, img_data, color);
-	output_line(pos2, pos3, img_data, color);
 }

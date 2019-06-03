@@ -20,7 +20,19 @@ t_vector_3		ft_vector_3_new(float x, float y, float z)
 	new_vector_3.x = x;
 	new_vector_3.y = y;
 	new_vector_3.z = z;
+	new_vector_3.color = 0;
 	return (new_vector_3);
+}
+
+t_vector_3		ft_vector_3_from_list(t_list *lst)
+{
+	t_vector_3 result;
+
+	result.x = ((t_vector_3*)lst->content)->x;
+	result.y = ((t_vector_3*)lst->content)->y;
+	result.z = ((t_vector_3*)lst->content)->z;
+	result.color = ((t_vector_3*)lst->content)->color;
+	return (result);
 }
 
 t_vector_3		ft_vector_3_add_v3(t_vector_3 v1, t_vector_3 v2)

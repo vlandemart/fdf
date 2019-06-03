@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libvgx.h"
+#include "fdf.h"
+#include "libvgx/libvgx.h"
 
 /*
 ** draws a line on 2d screen
@@ -18,7 +19,7 @@
 */
 
 void	output_line(t_vector_2_int p0, t_vector_2_int p1,
-					int *img_data, int col)
+					t_fdf *fdf, int col1, int col2)
 {
 	int dx = ft_abs(p1.x - p0.x);
 	int dy = ft_abs(p1.y - p0.y);
@@ -46,7 +47,9 @@ void	output_line(t_vector_2_int p0, t_vector_2_int p1,
 
 	while (1)
 	{
-		ft_image_put_pixel(img_data, p0.x, p0.y, col);
+		//TODO - calculate gradient color
+		ft_image_put_pixel(fdf, p0.x, p0.y, col1);
+		col2 = 0;
 		if (p0.x == p1.x && p0.y == p1.y)
 			break ;
 		e2 = err;

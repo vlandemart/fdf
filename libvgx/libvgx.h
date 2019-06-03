@@ -14,27 +14,30 @@
 # define LIBVGX_H
 # define SCREEN_W 800
 # define SCREEN_H 600
-# define DEBUG_LEVEL 1
+# define DEBUG_LEVEL -2
 
-# include "../extra_cube3d/libft/libft.h"
+# include "../libft/libft.h"
 
 typedef struct	s_vector_2
 {
-	float x;
-	float y;
+	float	x;
+	float	y;
+	int		color;
 }				t_vector_2;
 
 typedef struct	s_vector_2_int
 {
-	int x;
-	int y;
+	int	x;
+	int	y;
+	int	color;
 }				t_vector_2_int;
 
 typedef struct	s_vector_3
 {
-	float x;
-	float y;
-	float z;
+	float	x;
+	float	y;
+	float	z;
+	int		color;
 }				t_vector_3;
 
 typedef struct	s_gameobject_2
@@ -68,6 +71,7 @@ int				ft_boxcollision(t_gameobject_2 col, t_gameobject_2 obj);
 t_vector_2		ft_vector_2_new(float x, float y);
 t_vector_2_int	ft_vector_2_int_new(int x, int y);
 t_vector_3		ft_vector_3_new(float x, float y, float z);
+t_vector_3		ft_vector_3_from_list(t_list *lst);
 t_vector_2_int	ft_vector_3_to_2_int(t_vector_3 v3);
 t_vector_3		ft_vector_3_add_f(t_vector_3 v1, float num);
 t_vector_3		ft_vector_3_add_v3(t_vector_3 v1, t_vector_3 num);
@@ -96,16 +100,6 @@ t_mat4x4		matrix_multiplication(t_mat4x4 mat1, t_mat4x4 mat2);
 t_triangle		matrix_multiplication_tri(t_mat4x4 mat, t_triangle tri);
 
 /*
-** mlx extentions
-*/
-
-void			ft_image_put_pixel(int *img_data, int x, int y, int color);
-void			output_line(t_vector_2_int p0, t_vector_2_int p1,
-							int *img_data, int col);
-void			output_triangle(t_triangle tri, int *img_data, int color);
-void			output_fdf(t_triangle tri, int *img_data, int color);
-
-/*
 ** triangles
 */
 
@@ -127,6 +121,7 @@ t_vector_3		calculate_normal(t_triangle tri);
 ** debug
 */
 
+void			print_v3(t_vector_3 v3, int debug_lvl);
 void			print_matrix(t_mat4x4 m, int debug_lvl);
 void			print_triangle(t_triangle tri, int debug_lvl);
 void			print_triangle_v2int(t_vector_2_int pos1,

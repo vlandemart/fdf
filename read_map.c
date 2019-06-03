@@ -12,49 +12,6 @@
 
 #include "fdf.h"
 
-void	map_to_mesh(int **arr, int h, int w)
-{
-	int			i;
-	int			j;
-	t_vector_3	p[3];
-
-	print_str("\nBuilding mesh from map.\n", 2);
-	i = 0;
-	while (i < h)
-	{
-		j = 0;
-		while (j < w)
-		{
-			if (i + 1 < h && j + 1 < w)
-			{
-				p[0] = ft_vector_3_new(i + 1, j, arr[i + 1][j]);
-				p[1] = ft_vector_3_new(i, j, arr[i][j]);
-				p[2] = ft_vector_3_new(i, j + 1, arr[i][j + 1]);
-				add_triangle_to_mesh(ft_triangle_new(p[0], p[1], p[2]));
-			}
-			else if (i + 1 == h && j + 1 < w)
-			{
-				p[0] = ft_vector_3_new(i, j + 1, arr[i][j + 1]);
-				p[1] = ft_vector_3_new(i, j, arr[i][j]);
-				p[2] = ft_vector_3_new(i - 1, j, arr[i - 1][j]);
-				add_triangle_to_mesh(ft_triangle_new(p[0], p[1], p[2]));
-			}
-			else if (i + 1 < h && j + 1 == w)
-			{
-				p[0] = ft_vector_3_new(i, j - 1, arr[i][j - 1]);
-				p[1] = ft_vector_3_new(i, j, arr[i][j]);
-				p[2] = ft_vector_3_new(i + 1, j, arr[i + 1][j]);
-				add_triangle_to_mesh(ft_triangle_new(p[0], p[1], p[2]));
-			}
-			j++;
-		}
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
-	print_str("Mesh was built.\n\n", 2);
-}
-
 uint32_t	hex2int(char *hex)
 {
 	uint32_t val = 0;
@@ -73,12 +30,12 @@ uint32_t	hex2int(char *hex)
 	return val;
 }
 
-int		ft_getnbr(char *str, int *num)
+int		ft_getnbr(char *str, t_vector_3 *v3)
 {
 	int		i;
 
 	i = 0;
-	*num = ft_atoi(str);
+	v3->z = ft_atoi(str);
 	while (ft_isalnum(*str))
 	{
 		str++;
@@ -86,37 +43,41 @@ int		ft_getnbr(char *str, int *num)
 	}
 	if (*str == ',')
 	{
-		//char	*hex;
-		//int		hex_int;
+		char	*hex;
 
-		//str++;
-		//hex = ft_strcut(str, 8);
+		str++;
+		hex = ft_strcut(str, 8);
 		i += 9;
+		v3->color = (int)hex2int(hex);
+		free(hex);
 		/*
 		ft_putendl("READ HEX");
 		ft_putendl(hex);
-		hex_int = (int)hex2int(hex);
-		ft_putnbr(((hex_int >> 16) & 0xFF) / 255.0);
+		ft_putnbr(((v3->color >> 16) & 0xFF) / 255.0);
 		ft_putendl(" r");
-		ft_putnbr(((hex_int >> 8) & 0xFF) / 255.0);
+		ft_putnbr(((v3->color >> 8) & 0xFF) / 255.0);
 		ft_putendl(" g");
-		ft_putnbr(((hex_int) & 0xFF) / 255.0);
+		ft_putnbr(((v3->color) & 0xFF) / 255.0);
 		ft_putendl(" b");
 		*/
 	}
+	else
+		v3->color = 0;
+	
 	return (i);
 }
 
-void	compose_map(char *map, int **arr, int w)
+void	compose_map(char *map, t_fdf *fdf)
 {
-	int		i;
-	int		j;
-	int		num;
+	int				i;
+	int				j;
+	t_vector_3		*v3;
+
 
 	i = 0;
 	j = 0;
-	//w = 0;
 	print_str("\nMapping.\n", 2);
+	v3 = ft_memalloc(sizeof(v3));
 	while (*map != '\0')
 	{
 		if (*map == ' ')
@@ -124,67 +85,49 @@ void	compose_map(char *map, int **arr, int w)
 			map++;
 			continue;
 		}
-		if (*map == '\n' || j >= w)
+		if (*map == '\n' || j >= fdf->map_w)
 		{
 			while (*map != '\n')
 				map++;
 			i++;
 			j = 0;
 			map++;
+			if (i == fdf->map_h)
+				break;
 			continue;
 		}
-		map += ft_getnbr(map, &num);
-		arr[i][j] = num;
-		print_array_element(arr, i, j, 1);
-
+		v3->x = j;
+		v3->y = i;
+		map += ft_getnbr(map, v3);
+		print_v3(*v3, 1);
+		ft_lstadd(&fdf->vertices, ft_lstnew(v3, sizeof(t_vector_3)));
+		print_str(" added\n", 1);
 		j++;
-		//w = (j > w) ? w + 1 : w;
-		//map++;
 	}
+	//free(v3);
 	print_str("\nMapping was completed.\n", 2);
-	print_str("Result:\n", 1);
-	print_nbr(w, 1);
-	print_array(arr, i, w, 1);
-	map_to_mesh(arr, i, w);
 }
 
-int		**allocate_array(const char *str, int *w)
+void	calculate_map_size(const char *str, t_fdf *fdf)
 {
-	int lines;
-	int len;
-	int i;
-	int **arr;
-
-	print_str("\nAllocating memory for array:\n", 2);
-	lines = ft_wordcount(str, '\n');
-	arr = (int**)ft_memalloc(lines * sizeof(int*));
-	print_nbr(lines, 2);
-	print_str(" lines alloced with ", 2);
-	len = ft_strillen(str, '\n', ' ');
-	*w = len;
-	print_nbr(len, 2);
-	print_str(" width.\n", 2);
-	i = 0;
-	while (i < lines)
-	{
-		arr[i] = (int*)ft_memalloc(len * sizeof(int));
-		i++;
-	}
-	return (arr);
+	print_str("Map size: ", 2);
+	fdf->map_h = ft_wordcount(str, '\n');
+	fdf->map_w = ft_strillen(str, '\n', ' ');
+	print_nbr(fdf->map_h, 2);
+	print_str(" - ", 2);
+	print_nbr(fdf->map_w, 2);
 }
 
-void	read_map(char *map_name)
+void	read_map(char *map_name, t_fdf *fdf)
 {
 	int			*fd;
 	char		*line;
 	char		*result;
 	int			status;
-	int			**arr;
 
 	result = ft_strnew(0);
 	fd = (int*)malloc(sizeof(int));
-	//map_name = ft_strjoin("maps/", "42.fdf");
-	map_name = "/Users/njacobso/Projects/extra_cube3d/maps/elem.fdf";
+	//map_name = "/Users/njacobso/Projects/extra_cube3d/maps/test.fdf";
 	*fd = open(map_name, O_RDONLY);
 	while ((status = get_next_line(*fd, &line)) > 0)
 	{
@@ -198,8 +141,10 @@ void	read_map(char *map_name)
 	print_str("Read map: \n", 1);
 	print_str(result, 1);
 	print_str("\n", 1);
-	arr = allocate_array(result, fd);
-	compose_map(result, arr, *fd);
+	calculate_map_size(result, fdf);
+	compose_map(result, fdf);
+	print_nbr(ft_lstcount(fdf->vertices), 2);
+	print_str(" vertices added.\n", 2);
 	ft_strdel(&result);
 	free(fd);
 	//ft_strdel(&map_name);
