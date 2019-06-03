@@ -17,7 +17,7 @@ void	ft_image_put_pixel(int *img_data, int x, int y, int color)
 	int	pos;
 
 	pos = x + y * SCREEN_W;
-	if (pos > SCREEN_W * SCREEN_H)
+	if (pos > SCREEN_W * SCREEN_H || pos < 0)
 		return ;
 	img_data[pos] = color;
 }

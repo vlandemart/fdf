@@ -37,10 +37,6 @@ void		calculate_projection(void)
 	g_mat_proj = matrix_projection(fov, aspect, near, far);
 }
 
-/*
-** possible leaks
-*/
-
 void		draw_triangles(void)
 {
 	t_triangle	tri;
@@ -48,10 +44,16 @@ void		draw_triangles(void)
 	print_str("Drawing triangles\n", -1);
 	while (g_tri_to_draw != NULL)
 	{
+		if (g_tri_to_draw == NULL || g_tri_to_draw->content == NULL)
+		{
+			print_str("g_triangles are null", 2);
+			return ;
+		}
 		print_str("Tri is not null\n", -2);
 		tri.p[0] = ((t_triangle*)g_tri_to_draw->content)->p[0];
 		tri.p[1] = ((t_triangle*)g_tri_to_draw->content)->p[1];
 		tri.p[2] = ((t_triangle*)g_tri_to_draw->content)->p[2];
+		print_triangle(tri, -2);
 		print_str("Points allocated\n", -2);
 		output_fdf(tri, g_img_data, 0xffffff);
 		print_str("Output called\n", -2);
@@ -98,7 +100,7 @@ void		project_mesh(t_list *mesh)
 		tri = triangle_from_list(mesh);
 		tri_trans = matrix_multiplication_tri(mat_rot_z, tri);
 		tri_trans = matrix_multiplication_tri(mat_rot_x, tri_trans);
-		tri_trans = ft_triangle_add_v3(tri_trans, ft_vector_3_new(0, 0, 280));
+		tri_trans = ft_triangle_add_v3(tri_trans, ft_vector_3_new(0, 0, 30));
 		tri_proj = matrix_multiplication_tri(g_mat_proj, tri_trans);
 		tri_proj = ft_triangle_add_v3(tri_proj, ft_vector_3_new(1, 1, 0));
 		tri_proj = ft_triangle_multiply_v3(tri_proj,
@@ -110,9 +112,15 @@ void		project_mesh(t_list *mesh)
 
 void		add_triangle_to_mesh(t_triangle tri)
 {
-	ft_lstadd(&g_mesh, ft_lstnew(&tri, sizeof(t_triangle)));
+	ft_lstadd(&g_mesh, ft_lstnew(&tri, sizeof(tri)));
 	print_str("Adding triangle at ", 1);
 	print_triangle(tri, 1);
+	print_nbr(sizeof(tri), 2);
+	print_str(" tri\n", 2);
+	print_nbr(sizeof(t_vector_3), 2);
+	print_str(" v3\n", 2);
+	print_nbr(sizeof(float), 2);
+	print_str(" f\n", 2);
 }
 
 void		ft_clear_image(void)
@@ -148,6 +156,8 @@ void		render(void)
 	}
 	else
 	{
+		print_nbr(ft_lstcount(g_mesh), -1);
+		print_str(" triangles\n", -1);
 		calculate_projection();
 		print_str("Projection calculated.\n", -1);
 		project_mesh(g_mesh);
@@ -161,7 +171,7 @@ void		render(void)
 
 int			update(void)
 {
-	if (g_frametime > 0)
+	if (g_frametime < 0)
 	{
 		g_frametime += 0.001;
 		return (0);

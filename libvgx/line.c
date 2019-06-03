@@ -27,6 +27,23 @@ void	output_line(t_vector_2_int p0, t_vector_2_int p1,
 	int err = (dx > dy ? dx : -dy) / 2;
 	int e2;
 
+	if (p0.x < 0 || p0.y < 0)
+	{
+		print_str("ERROR!!!! ", 2);
+		print_nbr(p0.x, 2);
+		print_str(":", 2);
+		print_nbr(p0.y, 2);
+		print_str("\n", 2);
+	}
+	if (p1.x < 0 || p1.y < 0)
+	{
+		print_str("ERROR!!!! ", 2);
+		print_nbr(p1.x, 2);
+		print_str(":", 2);
+		print_nbr(p1.y, 2);
+		print_str("\n", 2);
+	}
+
 	while (1)
 	{
 		ft_image_put_pixel(img_data, p0.x, p0.y, col);

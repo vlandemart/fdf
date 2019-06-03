@@ -75,15 +75,12 @@ uint32_t	hex2int(char *hex)
 
 int		ft_getnbr(char *str, int *num)
 {
-	//char	*nbr;
 	int		i;
 
-	//nbr = ft_strnew(0);
 	i = 0;
 	*num = ft_atoi(str);
 	while (ft_isalnum(*str))
 	{
-		//nbr = ft_strjoin(nbr, str);
 		str++;
 		i++;
 	}
@@ -107,20 +104,18 @@ int		ft_getnbr(char *str, int *num)
 		ft_putendl(" b");
 		*/
 	}
-	//ft_strdel(&nbr);
 	return (i);
 }
 
-void	compose_map(char *map, int **arr)
+void	compose_map(char *map, int **arr, int w)
 {
 	int		i;
 	int		j;
-	int		w;
 	int		num;
 
 	i = 0;
 	j = 0;
-	w = 0;
+	//w = 0;
 	print_str("\nMapping.\n", 2);
 	while (*map != '\0')
 	{
@@ -129,8 +124,10 @@ void	compose_map(char *map, int **arr)
 			map++;
 			continue;
 		}
-		if (*map == '\n')
+		if (*map == '\n' || j >= w)
 		{
+			while (*map != '\n')
+				map++;
 			i++;
 			j = 0;
 			map++;
@@ -141,16 +138,17 @@ void	compose_map(char *map, int **arr)
 		print_array_element(arr, i, j, 1);
 
 		j++;
-		w = (j > w) ? w + 1 : w;
+		//w = (j > w) ? w + 1 : w;
 		//map++;
 	}
 	print_str("\nMapping was completed.\n", 2);
 	print_str("Result:\n", 1);
+	print_nbr(w, 1);
 	print_array(arr, i, w, 1);
 	map_to_mesh(arr, i, w);
 }
 
-int		**allocate_array(const char *str)
+int		**allocate_array(const char *str, int *w)
 {
 	int lines;
 	int len;
@@ -163,6 +161,7 @@ int		**allocate_array(const char *str)
 	print_nbr(lines, 2);
 	print_str(" lines alloced with ", 2);
 	len = ft_strillen(str, '\n', ' ');
+	*w = len;
 	print_nbr(len, 2);
 	print_str(" width.\n", 2);
 	i = 0;
@@ -176,30 +175,32 @@ int		**allocate_array(const char *str)
 
 void	read_map(char *map_name)
 {
-	int			fd;
+	int			*fd;
 	char		*line;
 	char		*result;
 	int			status;
 	int			**arr;
 
 	result = ft_strnew(0);
+	fd = (int*)malloc(sizeof(int));
 	//map_name = ft_strjoin("maps/", "42.fdf");
-	map_name = "/Users/njacobso/Projects/extra_cube3d/maps/elem-col.fdf";
-	fd = open(map_name, O_RDONLY);
-	while ((status = get_next_line(fd, &line)) > 0)
+	map_name = "/Users/njacobso/Projects/extra_cube3d/maps/elem.fdf";
+	*fd = open(map_name, O_RDONLY);
+	while ((status = get_next_line(*fd, &line)) > 0)
 	{
 		result = ft_strjoinc(result, line);
 		if (status == 2)
 			result = ft_strjoinc(result, "\n");
 		ft_strdel(&line);
 	}
-	close(fd);
+	close(*fd);
 	print_str("\n", 1);
 	print_str("Read map: \n", 1);
 	print_str(result, 1);
 	print_str("\n", 1);
-	arr = allocate_array(result);
-	compose_map(result, arr);
+	arr = allocate_array(result, fd);
+	compose_map(result, arr, *fd);
 	ft_strdel(&result);
+	free(fd);
 	//ft_strdel(&map_name);
 }
