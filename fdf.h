@@ -29,8 +29,9 @@ typedef struct	s_fdf
 	int			*img_data;
 	t_vector_3	map_pos;
 	t_vector_3	map_rot;
-	t_list		*vertices;
-	t_list		*vertices_to_draw;
+	t_vector_3	*vertices;
+	int			vertices_count;
+	t_vector_3	*vertices_to_draw;
 	int			map_h;
 	int			map_w;
 }				t_fdf;

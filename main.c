@@ -33,6 +33,11 @@ void		output_fdf(t_vector_3 v1, t_vector_3 v2, t_fdf *fdf)
 	print_nbr(v2.color, -2);
 	print_str("\n", -2);
 
+	if (pos1.x < 0 || pos1.y < 0 || pos2.x < 0 || pos2.y < 0 ||
+		pos1.x > SCREEN_W || pos2.x > SCREEN_W ||
+		pos1.y > SCREEN_H || pos2.y > SCREEN_H)
+		return ;
+
 	output_line(pos1, pos2, fdf, v1.color, v2.color);
 }
 
@@ -56,6 +61,7 @@ void		draw_vertices(t_fdf *fdf)
 	t_vector_3	v2;
 	int i;
 	int j;
+	int index;
 
 	i = 0;
 	while (i < fdf->map_h)
@@ -63,26 +69,26 @@ void		draw_vertices(t_fdf *fdf)
 		j = 0;
 		while (j < fdf->map_w)
 		{
-			if (fdf->vertices_to_draw->next != NULL)
+			index = i * fdf->map_w + j;
+			v1 = fdf->vertices_to_draw[index];
+			if (j + 1 < fdf->map_w)
 			{
-				v1 = ft_vector_3_from_list(fdf->vertices_to_draw);
-				if (j + 1 != fdf->map_w)
-				{
-					v2 = ft_vector_3_from_list(fdf->vertices_to_draw->next);
-					output_fdf(v1, v2, fdf);
-				}
-				if (ft_lstget(fdf->vertices_to_draw, fdf->map_w) != NULL)
-				{
-					v2 = ft_vector_3_from_list(ft_lstget(fdf->vertices_to_draw, fdf->map_w));
-					output_fdf(v1, v2, fdf);
-				}
-				ft_lstremove(&fdf->vertices_to_draw);
+				print_str("v2 hor\n", -3);
+				v2 = fdf->vertices_to_draw[index + 1];
+				output_fdf(v1, v2, fdf);
+			}
+			if (i + 1 < fdf->map_h)
+			{
+				print_str("v2 vert\n", -3);
+				v2 = fdf->vertices_to_draw[index + fdf->map_w];
+				output_fdf(v1, v2, fdf);
 			}
 			j++;
 		}
 		i++;
 	}
-	ft_lstclear(&fdf->vertices_to_draw);
+	print_str("done\n", -3);
+	free(fdf->vertices_to_draw);
 }
 
 void		project_vertices(t_fdf *fdf)
@@ -91,29 +97,38 @@ void		project_vertices(t_fdf *fdf)
 	t_mat4x4	mat_proj;
 	t_mat4x4	mat_rot_z;
 	t_mat4x4	mat_rot_x;
-	t_list		*vertecies;
+	t_vector_3	*vertecies;
+	int			i;
+	int			j;
 
-	vertecies = fdf->vertices;
+	vertecies = ft_memalloc(fdf->vertices_count * sizeof(t_vector_3));
+	memcpy(vertecies, fdf->vertices, fdf->vertices_count * sizeof(t_vector_3));
+	*vertecies = *fdf->vertices;
+	fdf->vertices_to_draw = ft_memalloc(fdf->vertices_count * sizeof(t_vector_3));
 	mat_proj = calculate_projection();
 	mat_rot_x = matrix_rotation_x(fdf->map_rot.x * .5f);
 	mat_rot_z = matrix_rotation_z(fdf->map_rot.z);
-	while (vertecies != NULL)
+	i = 0;
+	while (i < fdf->map_h)
 	{
-		v3 = ft_vector_3_from_list(vertecies);
-		v3 = matrix_multiply_vector(mat_rot_z, v3);
-		v3 = matrix_multiply_vector(mat_rot_x, v3);
-		v3 = ft_vector_3_add_v3(v3, ft_vector_3_new(0, 0, 300));
-		v3 = matrix_multiply_vector(mat_proj, v3);
-		v3 = ft_vector_3_add_v3(v3, ft_vector_3_new(1, 1, 0));
-		v3 = ft_vector_3_multiply_v3(v3,
-			ft_vector_3_new(0.5f * (float)SCREEN_W, 0.5 * SCREEN_H, 1));
-		print_v3(v3, -2);
-		print_str(" vertex ", -2);
-		ft_lstadd(&fdf->vertices_to_draw, ft_lstnew(&v3, sizeof(t_vector_3)));
-		print_nbr(((t_vector_3*)fdf->vertices_to_draw->content)->x, -2);
-		print_str(" x was written.\n", -2);
-		vertecies = vertecies->next;
+		j = 0;
+		while (j < fdf->map_w)
+		{
+			v3 = vertecies[i * fdf->map_w + j];
+			v3 = matrix_multiply_vector(mat_rot_z, v3);
+			v3 = matrix_multiply_vector(mat_rot_x, v3);
+			v3 = ft_vector_3_add_v3(v3, ft_vector_3_new(0, 0, 300));
+			v3 = matrix_multiply_vector(mat_proj, v3);
+			v3 = ft_vector_3_add_v3(v3, ft_vector_3_new(1, 1, 0));
+			v3 = ft_vector_3_multiply_v3(v3,
+				ft_vector_3_new(0.5f * (float)SCREEN_W, 0.5 * SCREEN_H, 1));
+			fdf->vertices_to_draw[i * fdf->map_w + j] = v3;
+			j++;
+		}
+		i++;
 	}
+	print_str("\n", 1);
+	free(vertecies);
 }
 
 void		ft_clear_image(t_fdf *fdf)
@@ -142,14 +157,14 @@ void		render(t_fdf *fdf)
 
 	fdf->img_data = (int *)mlx_get_data_addr(fdf->img_main, &bpp, &size, &end);
 	ft_clear_image(fdf);
-	if (ft_lstcount(fdf->vertices) == 0)
+	if (fdf->vertices_count == 0)
 	{
 		print_str("No map to render\n", 5);
 		exit (1);
 	}
 	else
 	{
-		print_nbr(ft_lstcount(fdf->vertices), -1);
+		print_nbr(fdf->vertices_count, -1);
 		print_str(" vertices\n", -1);
 		project_vertices(fdf);
 		print_str("Vertices projected.\n", -1);
@@ -191,7 +206,7 @@ int			main(int ac, char **av)
 	fdf->map_rot = ft_vector_3_new(1, 1, 1);
 
 	read_map(av[1], fdf);
-	print_nbr(ft_lstcount(fdf->vertices), 2);
+	print_nbr(fdf->vertices_count, 2);
 	print_str(" vertices added.\n", 2);
 	print_str("Rendering map...\n", 5);
 	mlx_hook(fdf->win, 17, 0, close_window, (void *)0);

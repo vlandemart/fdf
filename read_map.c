@@ -89,22 +89,24 @@ void	compose_map(char *map, t_fdf *fdf)
 		{
 			while (*map != '\n')
 				map++;
+			map++;
+			if (i + 1 == fdf->map_h)
+				break;
 			i++;
 			j = 0;
-			map++;
-			if (i == fdf->map_h)
-				break;
 			continue;
 		}
 		v3->x = j;
 		v3->y = i;
 		map += ft_getnbr(map, v3);
-		print_v3(*v3, 1);
-		ft_lstadd(&fdf->vertices, ft_lstnew(v3, sizeof(t_vector_3)));
+		//print_v3(*v3, 1);
+		fdf->vertices[i * fdf->map_w + j] = *v3;
+		print_v3(fdf->vertices[i * fdf->map_w + j], 1);
 		print_str(" added\n", 1);
 		j++;
 	}
 	free(v3);
+	fdf->vertices_count = i * fdf->map_w + j;
 	print_str("\nMapping was completed.\n", 2);
 }
 
@@ -113,6 +115,7 @@ void	calculate_map_size(const char *str, t_fdf *fdf)
 	print_str("Map size: ", 2);
 	fdf->map_h = ft_wordcount(str, '\n');
 	fdf->map_w = ft_strillen(str, '\n', ' ');
+	fdf->vertices = ft_memalloc(fdf->map_h * fdf->map_w * sizeof(t_vector_3));
 	print_nbr(fdf->map_h, 2);
 	print_str(" - ", 2);
 	print_nbr(fdf->map_w, 2);
@@ -143,7 +146,7 @@ void	read_map(char *map_name, t_fdf *fdf)
 	print_str("\n", 1);
 	calculate_map_size(result, fdf);
 	compose_map(result, fdf);
-	print_nbr(ft_lstcount(fdf->vertices), 2);
+	print_nbr(fdf->vertices_count, 2);
 	print_str(" vertices added.\n", 2);
 	ft_strdel(&result);
 	free(fd);

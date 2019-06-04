@@ -11,7 +11,7 @@
 #******************************************************************************#
 
 NAME		= cube3d
-CFLAGS		= -g -Wall -Werror -Wextra
+CFLAGS		= -g -o1 -o2 -o3 -Wall -Werror -Wextra
 FILES		= main.c read_map.c line.c mlx_image.c
 LIBMLX		= ./minilibx -lmlx
 LIBVGX		= ./libvgx -lvgx
