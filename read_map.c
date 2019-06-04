@@ -62,7 +62,7 @@ int		ft_getnbr(char *str, t_vector_3 *v3)
 		*/
 	}
 	else
-		v3->color = 0;
+		v3->color = 0xFFFFFF;
 	
 	return (i);
 }
@@ -77,7 +77,7 @@ void	compose_map(char *map, t_fdf *fdf)
 	i = 0;
 	j = 0;
 	print_str("\nMapping.\n", 2);
-	v3 = ft_memalloc(sizeof(v3));
+	v3 = ft_memalloc(sizeof(t_vector_3));
 	while (*map != '\0')
 	{
 		if (*map == ' ')
@@ -104,7 +104,7 @@ void	compose_map(char *map, t_fdf *fdf)
 		print_str(" added\n", 1);
 		j++;
 	}
-	//free(v3);
+	free(v3);
 	print_str("\nMapping was completed.\n", 2);
 }
 

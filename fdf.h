@@ -13,8 +13,9 @@
 #ifndef FDF_H
 # define FDF_H
 
-# include "mlx.h"
+//# include "mlx.h"
 # include "libvgx/libvgx.h"
+# include "minilibx/mlx.h"
 # include "math.h"
 # include <stdlib.h>
 # include <fcntl.h>

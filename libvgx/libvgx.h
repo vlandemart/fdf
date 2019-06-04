@@ -14,7 +14,7 @@
 # define LIBVGX_H
 # define SCREEN_W 800
 # define SCREEN_H 600
-# define DEBUG_LEVEL -2
+# define DEBUG_LEVEL 2
 
 # include "../libft/libft.h"
 

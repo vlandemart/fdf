@@ -20,7 +20,7 @@ t_vector_3		ft_vector_3_new(float x, float y, float z)
 	new_vector_3.x = x;
 	new_vector_3.y = y;
 	new_vector_3.z = z;
-	new_vector_3.color = 0;
+	new_vector_3.color = 0xFFFFFF;
 	return (new_vector_3);
 }
 
