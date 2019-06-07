@@ -67,35 +67,16 @@ t_mat4x4		matrix_make_translation(float x, float y, float z);
 t_mat4x4		matrix_projection(float fov, float aspect, float near,
 									float far);
 t_mat4x4		matrix_multiplication(t_mat4x4 mat1, t_mat4x4 mat2);
-t_triangle		matrix_multiplication_tri(t_mat4x4 mat, t_triangle tri);
-
-/*
-** triangles
-*/
-
-t_triangle		ft_triangle_new(t_vector3 p0, t_vector3 p1,
-								t_vector3 p2);
-t_triangle		ft_triangle_add_f(t_triangle tri, float num);
-t_triangle		ft_triangle_add_v3(t_triangle tri, t_vector3 v);
-t_triangle		ft_triangle_multiply_f(t_triangle tri, float num);
-t_triangle		ft_triangle_multiply_v3(t_triangle tri, t_vector3 v);
-t_triangle		triangle_from_list(t_list *lst);
-
-/*
-** graphics calculations
-*/
-
-t_vector3		calculate_normal(t_triangle tri);
 
 /*
 ** debug
 */
 
-void			print_v3(t_vector3 v3, int debug_lvl);
-void			print_matrix(t_mat4x4 m, int debug_lvl);
-void			print_triangle(t_triangle tri, int debug_lvl);
-void			print_array(int **arr, int h, int w, int debug_lvl);
-void			print_array_element(int **arr, int i, int j, int debug_lvl);
-void			print_str(char *str, int debug_lvl);
-void			print_nbr(int nbr, int debug_lvl);
+void			debug_v3(t_vector3 v3, int debug_lvl);
+void			debug_matrix(t_mat4x4 m, int debug_lvl);
+void			debug_triangle(t_triangle tri, int debug_lvl);
+void			debug_array(int **arr, int h, int w, int debug_lvl);
+void			debug_array_element(int **arr, int i, int j, int debug_lvl);
+void			debug_str(char *str, int debug_lvl);
+void			debug_nbr(int nbr, int debug_lvl);
 #endif

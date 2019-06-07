@@ -19,10 +19,10 @@ void		output_fdf(t_vector3 v1, t_vector3 v2, t_fdf *fdf)
 
 	pos1 = vector3_new((int)v1.x, (int)v1.y, 0);
 	pos2 = vector3_new((int)v2.x, (int)v2.y, 0);
-	print_v3(v1, -2);
-	print_str(" ### ", -2);
-	print_v3(v2, -2);
-	print_str("\n", -2);
+	debug_v3(v1, -2);
+	debug_str(" ### ", -2);
+	debug_v3(v2, -2);
+	debug_str("\n", -2);
 	if (pos1.x < 0 || pos1.y < 0 || pos2.x < 0 || pos2.y < 0 ||
 		pos1.x > SCREEN_W || pos2.x > SCREEN_W ||
 		pos1.y > SCREEN_H || pos2.y > SCREEN_H)
@@ -146,17 +146,17 @@ void		render(t_fdf *fdf)
 	ft_clear_image(fdf);
 	if (fdf->vertices_count == 0)
 	{
-		print_str("No map to render\n", 5);
+		debug_str("No map to render\n", 5);
 		exit(1);
 	}
 	else
 	{
-		print_nbr(fdf->vertices_count, -1);
-		print_str(" vertices\n", -1);
+		debug_nbr(fdf->vertices_count, -1);
+		debug_str(" vertices\n", -1);
 		project_vertices(fdf);
-		print_str("Vertices projected.\n", -1);
+		debug_str("Vertices projected.\n", -1);
 		draw_vertices(fdf);
-		print_str("Vertices drawn.\n", -1);
+		debug_str("Vertices drawn.\n", -1);
 	}
 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img_main, 0, 0);
 }
@@ -196,7 +196,7 @@ int			handle_input(int key, t_fdf *fdf)
 int			close_window(void *param)
 {
 	(void)param;
-	print_str("App was closed.\n", 5);
+	debug_str("App was closed.\n", 5);
 	exit(0);
 	return (0);
 }
@@ -218,9 +218,9 @@ int			main(int ac, char **av)
 	fdf->map_pos = vector3_new(0, 0, -300);
 	fdf->iso = 0;
 	read_map(av[1], fdf);
-	print_nbr(fdf->vertices_count, 2);
-	print_str(" vertices added.\n", 2);
-	print_str("Rendering map...\n", 5);
+	debug_nbr(fdf->vertices_count, 2);
+	debug_str(" vertices added.\n", 2);
+	debug_str("Rendering map...\n", 5);
 	mlx_hook(fdf->win, 17, 0, close_window, (void *)0);
 	render(fdf);
 	mlx_hook(fdf->win, 2, 0, handle_input, fdf);

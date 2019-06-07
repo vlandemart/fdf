@@ -31,5 +31,4 @@ size_t	ft_strillen(const char *s, char c, char i)
 			n++;
 	}
 	return (sum);
-
 }

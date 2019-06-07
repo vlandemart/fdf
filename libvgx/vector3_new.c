@@ -1,40 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoinc.c                                      :+:      :+:    :+:   */
+/*   vector3_new.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njacobso <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/31 20:23:40 by njacobso          #+#    #+#             */
-/*   Updated: 2019/05/31 20:23:41 by njacobso         ###   ########.fr       */
+/*   Created: 2019/06/07 15:33:37 by njacobso          #+#    #+#             */
+/*   Updated: 2019/06/07 15:33:55 by njacobso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "libvgx.h"
 
-char	*ft_strjoinc(char *s1, char const *s2)
+t_vector3	vector3_new(float x, float y, float z)
 {
-	int		size;
-	int		i;
-	int		j;
-	char	*str;
+	t_vector3 new_vector_3;
 
-	if (!s1 || !s2)
-		return (NULL);
-	size = ft_strlen(s1) + ft_strlen(s2);
-	str = ft_strnew(size);
-	if (!str)
-		return (NULL);
-	i = 0;
-	while (i < size)
-	{
-		j = 0;
-		while (s1[j])
-			str[i++] = s1[j++];
-		j = 0;
-		while (s2[j])
-			str[i++] = s2[j++];
-	}
-	ft_strdel(&s1);
-	return (str);
+	new_vector_3.x = x;
+	new_vector_3.y = y;
+	new_vector_3.z = z;
+	new_vector_3.color = 0xFFFFFF;
+	return (new_vector_3);
 }
