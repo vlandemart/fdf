@@ -30,7 +30,7 @@ uint32_t	hex2int(char *hex)
 	return val;
 }
 
-int		ft_getnbr(char *str, t_vector_3 *v3)
+int		ft_getnbr(char *str, t_vector3 *v3)
 {
 	int		i;
 
@@ -50,16 +50,6 @@ int		ft_getnbr(char *str, t_vector_3 *v3)
 		i += 9;
 		v3->color = (int)hex2int(hex);
 		free(hex);
-		/*
-		ft_putendl("READ HEX");
-		ft_putendl(hex);
-		ft_putnbr(((v3->color >> 16) & 0xFF) / 255.0);
-		ft_putendl(" r");
-		ft_putnbr(((v3->color >> 8) & 0xFF) / 255.0);
-		ft_putendl(" g");
-		ft_putnbr(((v3->color) & 0xFF) / 255.0);
-		ft_putendl(" b");
-		*/
 	}
 	else
 		v3->color = 0xFFFFFF;
@@ -71,13 +61,13 @@ void	compose_map(char *map, t_fdf *fdf)
 {
 	int				i;
 	int				j;
-	t_vector_3		*v3;
+	t_vector3		*v3;
 
 
 	i = 0;
 	j = 0;
 	print_str("\nMapping.\n", 2);
-	v3 = ft_memalloc(sizeof(t_vector_3));
+	v3 = ft_memalloc(sizeof(t_vector3));
 	while (*map != '\0')
 	{
 		if (*map == ' ')
@@ -87,11 +77,24 @@ void	compose_map(char *map, t_fdf *fdf)
 		}
 		if (*map == '\n' || j >= fdf->map_w)
 		{
+			if (*map == '\n')
+			{
+				print_nbr(i, -1);
+				print_str(" - ", -1);
+				print_nbr(j, -1);
+				print_str(" new line\n", -1);
+			}
 			while (*map != '\n')
 				map++;
 			map++;
 			if (i + 1 == fdf->map_h)
+			{
+				print_nbr(i, -1);
+				print_str(" - ", -1);
+				print_nbr(j, -1);
+				print_str(" breaking\n", -1);
 				break;
+			}
 			i++;
 			j = 0;
 			continue;
@@ -106,7 +109,11 @@ void	compose_map(char *map, t_fdf *fdf)
 		j++;
 	}
 	free(v3);
+	print_nbr(i * fdf->map_w + j, 2);
+	print_str(" map size\n", 2);
 	fdf->vertices_count = i * fdf->map_w + j;
+	print_nbr(fdf->vertices_count, 2);
+	print_str(" map size\n", 2);
 	print_str("\nMapping was completed.\n", 2);
 }
 
@@ -115,10 +122,13 @@ void	calculate_map_size(const char *str, t_fdf *fdf)
 	print_str("Map size: ", 2);
 	fdf->map_h = ft_wordcount(str, '\n');
 	fdf->map_w = ft_strillen(str, '\n', ' ');
-	fdf->vertices = ft_memalloc(fdf->map_h * fdf->map_w * sizeof(t_vector_3));
+	fdf->vertices = (t_vector3*)malloc(fdf->map_h * fdf->map_w * sizeof(t_vector3));
 	print_nbr(fdf->map_h, 2);
 	print_str(" - ", 2);
 	print_nbr(fdf->map_w, 2);
+	print_str("\n", 2);
+	print_nbr(fdf->map_h * fdf->map_w, 2);
+	print_str(" allocated\n", 2);
 }
 
 void	read_map(char *map_name, t_fdf *fdf)

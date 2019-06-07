@@ -13,9 +13,9 @@
 #include "libvgx.h"
 #include <math.h>
 
-t_vector_3		ft_vector_3_new(float x, float y, float z)
+t_vector3		vector3_new(float x, float y, float z)
 {
-	t_vector_3 new_vector_3;
+	t_vector3 new_vector_3;
 
 	new_vector_3.x = x;
 	new_vector_3.y = y;
@@ -24,20 +24,20 @@ t_vector_3		ft_vector_3_new(float x, float y, float z)
 	return (new_vector_3);
 }
 
-t_vector_3		ft_vector_3_from_list(t_list *lst)
+t_vector3		vector3_from_list(t_list *lst)
 {
-	t_vector_3 result;
+	t_vector3 result;
 
-	result.x = ((t_vector_3*)lst->content)->x;
-	result.y = ((t_vector_3*)lst->content)->y;
-	result.z = ((t_vector_3*)lst->content)->z;
-	result.color = ((t_vector_3*)lst->content)->color;
+	result.x = ((t_vector3*)lst->content)->x;
+	result.y = ((t_vector3*)lst->content)->y;
+	result.z = ((t_vector3*)lst->content)->z;
+	result.color = ((t_vector3*)lst->content)->color;
 	return (result);
 }
 
-t_vector_3		ft_vector_3_add_v3(t_vector_3 v1, t_vector_3 v2)
+t_vector3		vector3_add_v3(t_vector3 v1, t_vector3 v2)
 {
-	t_vector_3 result;
+	t_vector3 result;
 
 	v1.x += v2.x;
 	v1.y += v2.y;
@@ -46,9 +46,16 @@ t_vector_3		ft_vector_3_add_v3(t_vector_3 v1, t_vector_3 v2)
 	return (result);
 }
 
-t_vector_3		ft_vector_3_subtract_v3(t_vector_3 v1, t_vector_3 v2)
+void			vector3_add_v3_p(t_vector3 *v1, t_vector3 v2)
 {
-	t_vector_3 result;
+	v1->x += v2.x;
+	v1->y += v2.y;
+	v1->z += v2.z;
+}
+
+t_vector3		vector3_subtract_v3(t_vector3 v1, t_vector3 v2)
+{
+	t_vector3 result;
 
 	v1.x -= v2.x;
 	v1.y -= v2.y;
@@ -57,7 +64,7 @@ t_vector_3		ft_vector_3_subtract_v3(t_vector_3 v1, t_vector_3 v2)
 	return (result);
 }
 
-t_vector_3		ft_vector_3_add_f(t_vector_3 v1, float num)
+t_vector3		vector3_add_f(t_vector3 v1, float num)
 {
 	v1.x += num;
 	v1.y += num;
@@ -65,7 +72,7 @@ t_vector_3		ft_vector_3_add_f(t_vector_3 v1, float num)
 	return (v1);
 }
 
-t_vector_3		ft_vector_3_multiply_f(t_vector_3 v1, float num)
+t_vector3		vector3_multiply_f(t_vector3 v1, float num)
 {
 	v1.x *= num;
 	v1.y *= num;
@@ -73,7 +80,7 @@ t_vector_3		ft_vector_3_multiply_f(t_vector_3 v1, float num)
 	return (v1);
 }
 
-t_vector_3		ft_vector_3_multiply_v3(t_vector_3 v1, t_vector_3 v2)
+t_vector3		vector3_multiply_v3(t_vector3 v1, t_vector3 v2)
 {
 	v1.x *= v2.x;
 	v1.y *= v2.y;
@@ -81,7 +88,7 @@ t_vector_3		ft_vector_3_multiply_v3(t_vector_3 v1, t_vector_3 v2)
 	return (v1);
 }
 
-t_vector_3		ft_vector_3_divide_f(t_vector_3 v1, float num)
+t_vector3		vector3_divide_f(t_vector3 v1, float num)
 {
 	v1.x /= num;
 	v1.y /= num;
@@ -89,27 +96,27 @@ t_vector_3		ft_vector_3_divide_f(t_vector_3 v1, float num)
 	return (v1);
 }
 
-float			ft_vector_3_dot_product(t_vector_3 v1, t_vector_3 v2)
+float			vector3_dot_product(t_vector3 v1, t_vector3 v2)
 {
 	return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 }
 
-float			ft_vector_3_length(t_vector_3 v1)
+float			vector3_length(t_vector3 v1)
 {
-	return (sqrtf(ft_vector_3_dot_product(v1, v1)));
+	return (sqrtf(vector3_dot_product(v1, v1)));
 }
 
-t_vector_3		ft_vector_3_normalize(t_vector_3 v1)
+t_vector3		vector_3_normalize(t_vector3 v1)
 {
 	float l;
 
-	l = ft_vector_3_length(v1);
-	return (ft_vector_3_divide_f(v1, l));
+	l = vector3_length(v1);
+	return (vector3_divide_f(v1, l));
 }
 
-t_vector_3		ft_vector_3_cross_product(t_vector_3 v1, t_vector_3 v2)
+t_vector3		vector3_cross_product(t_vector3 v1, t_vector3 v2)
 {
-	t_vector_3 v;
+	t_vector3 v;
 
 	v.x = v1.y * v2.z - v1.z * v2.y;
 	v.y = v1.z * v2.x - v1.x * v2.z;

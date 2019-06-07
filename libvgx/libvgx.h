@@ -12,39 +12,19 @@
 
 #ifndef LIBVGX_H
 # define LIBVGX_H
-# define SCREEN_W 800
-# define SCREEN_H 600
-# define DEBUG_LEVEL 2
+# define SCREEN_W 1600
+# define SCREEN_H 900
+# define DEBUG_LEVEL 5
 
 # include "../libft/libft.h"
 
-typedef struct	s_vector_2
-{
-	float	x;
-	float	y;
-	int		color;
-}				t_vector_2;
-
-typedef struct	s_vector_2_int
-{
-	int	x;
-	int	y;
-	int	color;
-}				t_vector_2_int;
-
-typedef struct	s_vector_3
+typedef struct	s_vector3
 {
 	float	x;
 	float	y;
 	float	z;
 	int		color;
-}				t_vector_3;
-
-typedef struct	s_gameobject_2
-{
-	t_vector_2 position;
-	t_vector_2 size;
-}				t_gameobject_2;
+}				t_vector3;
 
 typedef struct	s_mat4x4
 {
@@ -53,46 +33,36 @@ typedef struct	s_mat4x4
 
 typedef struct	s_triangle
 {
-	t_vector_3 p[3];
+	t_vector3 p[3];
 }				t_triangle;
-
-/*
-** game garbage
-*/
-
-t_gameobject_2	ft_gameobject_2_new(float x, float y, float width,
-									float height);
-int				ft_boxcollision(t_gameobject_2 col, t_gameobject_2 obj);
 
 /*
 ** vectors
 */
 
-t_vector_2		ft_vector_2_new(float x, float y);
-t_vector_2_int	ft_vector_2_int_new(int x, int y);
-t_vector_3		ft_vector_3_new(float x, float y, float z);
-t_vector_3		ft_vector_3_from_list(t_list *lst);
-t_vector_2_int	ft_vector_3_to_2_int(t_vector_3 v3);
-t_vector_3		ft_vector_3_add_f(t_vector_3 v1, float num);
-t_vector_3		ft_vector_3_add_v3(t_vector_3 v1, t_vector_3 num);
-t_vector_3		ft_vector_3_subtract_v3(t_vector_3 v1, t_vector_3 v2);
-t_vector_3		ft_vector_3_multiply_f(t_vector_3 v1, float num);
-t_vector_3		ft_vector_3_multiply_v3(t_vector_3 v1, t_vector_3 v2);
-t_vector_3		ft_vector_3_divide_f(t_vector_3 v1, float num);
-float			ft_vector_3_dot_product(t_vector_3 v1, t_vector_3 v2);
-float			ft_vector_3_length(t_vector_3 v1);
-t_vector_3		ft_vector_3_normalize(t_vector_3 v1);
-t_vector_3		ft_vector_3_cross_product(t_vector_3 v1, t_vector_3 v2);
+t_vector3		vector3_new(float x, float y, float z);
+t_vector3		vector3_from_list(t_list *lst);
+t_vector3		vector3_add_f(t_vector3 v1, float num);
+void			vector3_add_v3_p(t_vector3 *v1, t_vector3 v2);
+t_vector3		vector3_add_v3(t_vector3 v1, t_vector3 num);
+t_vector3		vector3_subtract_v3(t_vector3 v1, t_vector3 v2);
+t_vector3		vector3_multiply_f(t_vector3 v1, float num);
+t_vector3		vector3_multiply_v3(t_vector3 v1, t_vector3 v2);
+t_vector3		vector3_divide_f(t_vector3 v1, float num);
+float			vector3_dot_product(t_vector3 v1, t_vector3 v2);
+float			vector3_length(t_vector3 v1);
+t_vector3		vector3_normalize(t_vector3 v1);
+t_vector3		vector3_cross_product(t_vector3 v1, t_vector3 v2);
 
 /*
 ** matrix
 */
 
-t_vector_3		matrix_multiply_vector(t_mat4x4 m, t_vector_3 v);
+t_vector3		matrix_multiply_vector(t_mat4x4 m, t_vector3 v);
 t_mat4x4		matrix_identity();
-t_mat4x4		matrix_rotation_x(float angle_rad);
-t_mat4x4		matrix_rotation_y(float angle_rad);
-t_mat4x4		matrix_rotation_z(float angle_rad);
+t_mat4x4		matrix_rot_x(float angle_rad);
+t_mat4x4		matrix_rot_y(float angle_rad);
+t_mat4x4		matrix_rot_z(float angle_rad);
 t_mat4x4		matrix_make_translation(float x, float y, float z);
 t_mat4x4		matrix_projection(float fov, float aspect, float near,
 									float far);
@@ -103,29 +73,27 @@ t_triangle		matrix_multiplication_tri(t_mat4x4 mat, t_triangle tri);
 ** triangles
 */
 
-t_triangle		ft_triangle_new(t_vector_3 p0, t_vector_3 p1,
-								t_vector_3 p2);
+t_triangle		ft_triangle_new(t_vector3 p0, t_vector3 p1,
+								t_vector3 p2);
 t_triangle		ft_triangle_add_f(t_triangle tri, float num);
-t_triangle		ft_triangle_add_v3(t_triangle tri, t_vector_3 v);
+t_triangle		ft_triangle_add_v3(t_triangle tri, t_vector3 v);
 t_triangle		ft_triangle_multiply_f(t_triangle tri, float num);
-t_triangle		ft_triangle_multiply_v3(t_triangle tri, t_vector_3 v);
+t_triangle		ft_triangle_multiply_v3(t_triangle tri, t_vector3 v);
 t_triangle		triangle_from_list(t_list *lst);
 
 /*
 ** graphics calculations
 */
 
-t_vector_3		calculate_normal(t_triangle tri);
+t_vector3		calculate_normal(t_triangle tri);
 
 /*
 ** debug
 */
 
-void			print_v3(t_vector_3 v3, int debug_lvl);
+void			print_v3(t_vector3 v3, int debug_lvl);
 void			print_matrix(t_mat4x4 m, int debug_lvl);
 void			print_triangle(t_triangle tri, int debug_lvl);
-void			print_triangle_v2int(t_vector_2_int pos1,
-					t_vector_2_int pos2, t_vector_2_int pos3, int debug_lvl);
 void			print_array(int **arr, int h, int w, int debug_lvl);
 void			print_array_element(int **arr, int i, int j, int debug_lvl);
 void			print_str(char *str, int debug_lvl);

@@ -13,7 +13,7 @@
 #include "libvgx.h"
 #include <stdlib.h>
 
-t_triangle	ft_triangle_new(t_vector_3 p0, t_vector_3 p1, t_vector_3 p2)
+t_triangle	ft_triangle_new(t_vector3 p0, t_vector3 p1, t_vector3 p2)
 {
 	t_triangle tri;
 
@@ -25,33 +25,33 @@ t_triangle	ft_triangle_new(t_vector_3 p0, t_vector_3 p1, t_vector_3 p2)
 
 t_triangle	ft_triangle_multiply_f(t_triangle tri, float num)
 {
-	tri.p[0] = ft_vector_3_multiply_f(tri.p[0], num);
-	tri.p[1] = ft_vector_3_multiply_f(tri.p[1], num);
-	tri.p[2] = ft_vector_3_multiply_f(tri.p[2], num);
+	tri.p[0] = vector3_multiply_f(tri.p[0], num);
+	tri.p[1] = vector3_multiply_f(tri.p[1], num);
+	tri.p[2] = vector3_multiply_f(tri.p[2], num);
 	return (tri);
 }
 
-t_triangle	ft_triangle_multiply_v3(t_triangle tri, t_vector_3 v)
+t_triangle	ft_triangle_multiply_v3(t_triangle tri, t_vector3 v)
 {
-	tri.p[0] = ft_vector_3_multiply_v3(tri.p[0], v);
-	tri.p[1] = ft_vector_3_multiply_v3(tri.p[1], v);
-	tri.p[2] = ft_vector_3_multiply_v3(tri.p[2], v);
+	tri.p[0] = vector3_multiply_v3(tri.p[0], v);
+	tri.p[1] = vector3_multiply_v3(tri.p[1], v);
+	tri.p[2] = vector3_multiply_v3(tri.p[2], v);
 	return (tri);
 }
 
 t_triangle	ft_triangle_add_f(t_triangle tri, float num)
 {
-	tri.p[0] = ft_vector_3_add_f(tri.p[0], num);
-	tri.p[1] = ft_vector_3_add_f(tri.p[1], num);
-	tri.p[2] = ft_vector_3_add_f(tri.p[2], num);
+	tri.p[0] = vector3_add_f(tri.p[0], num);
+	tri.p[1] = vector3_add_f(tri.p[1], num);
+	tri.p[2] = vector3_add_f(tri.p[2], num);
 	return (tri);
 }
 
-t_triangle	ft_triangle_add_v3(t_triangle tri, t_vector_3 v)
+t_triangle	ft_triangle_add_v3(t_triangle tri, t_vector3 v)
 {
-	tri.p[0] = ft_vector_3_add_v3(tri.p[0], v);
-	tri.p[1] = ft_vector_3_add_v3(tri.p[1], v);
-	tri.p[2] = ft_vector_3_add_v3(tri.p[2], v);
+	tri.p[0] = vector3_add_v3(tri.p[0], v);
+	tri.p[1] = vector3_add_v3(tri.p[1], v);
+	tri.p[2] = vector3_add_v3(tri.p[2], v);
 	return (tri);
 }
 

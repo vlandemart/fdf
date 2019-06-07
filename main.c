@@ -12,36 +12,25 @@
 
 #include "fdf.h"
 
-void		output_fdf(t_vector_3 v1, t_vector_3 v2, t_fdf *fdf)
+void		output_fdf(t_vector3 v1, t_vector3 v2, t_fdf *fdf)
 {
-	t_vector_2_int pos1;
-	t_vector_2_int pos2;
+	t_vector3 pos1;
+	t_vector3 pos2;
 
-	pos1 = ft_vector_3_to_2_int(v1);
-	pos2 = ft_vector_3_to_2_int(v2);
-
-	print_nbr(v1.x, -2);
-	print_str(" : ", -2);
-	print_nbr(v1.y, -2);
-	print_str(" : ", -2);
-	print_nbr(v1.color, -2);
+	pos1 = vector3_new((int)v1.x, (int)v1.y, 0);
+	pos2 = vector3_new((int)v2.x, (int)v2.y, 0);
+	print_v3(v1, -2);
 	print_str(" ### ", -2);
-	print_nbr(v2.x, -2);
-	print_str(" : ", -2);
-	print_nbr(v2.y, -2);
-	print_str(" : ", -2);
-	print_nbr(v2.color, -2);
+	print_v3(v2, -2);
 	print_str("\n", -2);
-
 	if (pos1.x < 0 || pos1.y < 0 || pos2.x < 0 || pos2.y < 0 ||
 		pos1.x > SCREEN_W || pos2.x > SCREEN_W ||
 		pos1.y > SCREEN_H || pos2.y > SCREEN_H)
 		return ;
-
 	output_line(pos1, pos2, fdf, v1.color, v2.color);
 }
 
-t_mat4x4	calculate_projection(void)
+t_mat4x4	calc_proj(void)
 {
 	float near;
 	float far;
@@ -57,77 +46,75 @@ t_mat4x4	calculate_projection(void)
 
 void		draw_vertices(t_fdf *fdf)
 {
-	t_vector_3	v1;
-	t_vector_3	v2;
-	int i;
-	int j;
-	int index;
+	t_vector3	v1;
+	t_vector3	v2;
+	int			i;
+	int			j;
 
-	i = 0;
-	while (i < fdf->map_h)
+	i = -1;
+	while (++i < fdf->map_h)
 	{
-		j = 0;
-		while (j < fdf->map_w)
+		j = -1;
+		while (++j < fdf->map_w)
 		{
-			index = i * fdf->map_w + j;
-			v1 = fdf->vertices_to_draw[index];
+			v1 = fdf->vertices_to_draw[i * fdf->map_w + j];
 			if (j + 1 < fdf->map_w)
 			{
-				print_str("v2 hor\n", -3);
-				v2 = fdf->vertices_to_draw[index + 1];
+				v2 = fdf->vertices_to_draw[i * fdf->map_w + j + 1];
 				output_fdf(v1, v2, fdf);
 			}
 			if (i + 1 < fdf->map_h)
 			{
-				print_str("v2 vert\n", -3);
-				v2 = fdf->vertices_to_draw[index + fdf->map_w];
+				v2 = fdf->vertices_to_draw[i * fdf->map_w + j + fdf->map_w];
 				output_fdf(v1, v2, fdf);
 			}
-			j++;
 		}
-		i++;
 	}
-	print_str("done\n", -3);
 	free(fdf->vertices_to_draw);
+}
+
+void		iso(t_vector3 *v3)
+{
+	int prev_x;
+	int prev_y;
+
+	prev_x = v3->x;
+	prev_y = v3->y;
+	v3->x = (prev_x - prev_y) * cos(0.523599);
+	v3->y = -v3->z + (prev_x + prev_y) * sin(0.523599);
 }
 
 void		project_vertices(t_fdf *fdf)
 {
-	t_vector_3	v3;
-	t_mat4x4	mat_proj;
-	t_mat4x4	mat_rot_z;
-	t_mat4x4	mat_rot_x;
-	t_vector_3	*vertecies;
+	t_vector3	v3;
+	t_vector3	*vertecies;
 	int			i;
 	int			j;
 
-	vertecies = ft_memalloc(fdf->vertices_count * sizeof(t_vector_3));
-	memcpy(vertecies, fdf->vertices, fdf->vertices_count * sizeof(t_vector_3));
+	vertecies = ft_memalloc(fdf->vertices_count * sizeof(t_vector3));
+	memcpy(vertecies, fdf->vertices, fdf->vertices_count * sizeof(t_vector3));
 	*vertecies = *fdf->vertices;
-	fdf->vertices_to_draw = ft_memalloc(fdf->vertices_count * sizeof(t_vector_3));
-	mat_proj = calculate_projection();
-	mat_rot_x = matrix_rotation_x(fdf->map_rot.x * .5f);
-	mat_rot_z = matrix_rotation_z(fdf->map_rot.z);
-	i = 0;
-	while (i < fdf->map_h)
+	fdf->vertices_to_draw = ft_memalloc(fdf->vertices_count * sizeof(t_vector3));
+	i = -1;
+	while (++i < fdf->map_h)
 	{
-		j = 0;
-		while (j < fdf->map_w)
+		j = -1;
+		while (++j < fdf->map_w)
 		{
 			v3 = vertecies[i * fdf->map_w + j];
-			v3 = matrix_multiply_vector(mat_rot_z, v3);
-			v3 = matrix_multiply_vector(mat_rot_x, v3);
-			v3 = ft_vector_3_add_v3(v3, ft_vector_3_new(0, 0, 300));
-			v3 = matrix_multiply_vector(mat_proj, v3);
-			v3 = ft_vector_3_add_v3(v3, ft_vector_3_new(1, 1, 0));
-			v3 = ft_vector_3_multiply_v3(v3,
-				ft_vector_3_new(0.5f * (float)SCREEN_W, 0.5 * SCREEN_H, 1));
+			if (fdf->iso)
+				iso(&v3);
+			v3 = matrix_multiply_vector(matrix_rot_z(fdf->map_rot.z), v3);
+			v3 = matrix_multiply_vector(matrix_rot_x(fdf->map_rot.x), v3);
+			v3 = matrix_multiply_vector(matrix_rot_y(fdf->map_rot.y), v3);
+			v3 = vector3_add_v3(v3, fdf->map_pos);
+			v3 = matrix_multiply_vector(calc_proj(), v3);
+			v3 = vector3_add_v3(v3, vector3_new(1, 1, 0));
+			v3 = vector3_multiply_v3(v3,
+				vector3_new(0.5f * (float)SCREEN_W, 0.5 * SCREEN_H, 1));
 			fdf->vertices_to_draw[i * fdf->map_w + j] = v3;
-			j++;
 		}
-		i++;
 	}
-	print_str("\n", 1);
 	free(vertecies);
 }
 
@@ -160,7 +147,7 @@ void		render(t_fdf *fdf)
 	if (fdf->vertices_count == 0)
 	{
 		print_str("No map to render\n", 5);
-		exit (1);
+		exit(1);
 	}
 	else
 	{
@@ -174,11 +161,35 @@ void		render(t_fdf *fdf)
 	mlx_put_image_to_window(fdf->mlx, fdf->win, fdf->img_main, 0, 0);
 }
 
-int			update(int key, t_fdf *fdf)
+int			update(t_fdf *fdf)
 {
-	key = 0;
-	fdf->map_rot = ft_vector_3_add_f(fdf->map_rot, 0.03f);
 	render(fdf);
+	return (1);
+}
+
+int			handle_input(int key, t_fdf *fdf)
+{
+	int s;
+
+	s = 1;
+	if (key == 124 || key == 125 || key == 14 || key == 84 ||
+		key == 88 || key == 83 || key == 85)
+		s = -1;
+	if (key == 123 || key == 124)
+		vector3_add_v3_p(&fdf->map_pos, vector3_new(1 * s, 0, 0));
+	if (key == 126 || key == 125)
+		vector3_add_v3_p(&fdf->map_pos, vector3_new(0, 1 * s, 0));
+	if (key == 12 || key == 14)
+		vector3_add_v3_p(&fdf->map_pos, vector3_new(0, 0, 10 * s));
+	if (key == 91 || key == 84)
+		vector3_add_v3_p(&fdf->map_rot, vector3_new(0.03f * s, 0, 0));
+	if (key == 86 || key == 88)
+		vector3_add_v3_p(&fdf->map_rot, vector3_new(0, 0.03f * s, 0));
+	if (key == 89 || key == 92 || key == 83 || key == 85)
+		vector3_add_v3_p(&fdf->map_rot, vector3_new(0, 0, 0.03f * s));
+	if (key == 49)
+		fdf->iso = (fdf->iso == 0) ? 1 : 0;
+	update(fdf);
 	return (1);
 }
 
@@ -203,16 +214,16 @@ int			main(int ac, char **av)
 	fdf->mlx = mlx_init();
 	fdf->win = mlx_new_window(fdf->mlx, SCREEN_W, SCREEN_H, "Cube3d");
 	fdf->img_main = mlx_new_image(fdf->mlx, SCREEN_W, SCREEN_H);
-	fdf->map_rot = ft_vector_3_new(1, 1, 1);
-
+	fdf->map_rot = vector3_new(0, 0, 180);
+	fdf->map_pos = vector3_new(0, 0, -300);
+	fdf->iso = 0;
 	read_map(av[1], fdf);
 	print_nbr(fdf->vertices_count, 2);
 	print_str(" vertices added.\n", 2);
 	print_str("Rendering map...\n", 5);
 	mlx_hook(fdf->win, 17, 0, close_window, (void *)0);
-	//mlx_loop_hook(fdf->mlx, update, fdf);
 	render(fdf);
-	mlx_hook(fdf->win, 2, 0, update, fdf);
+	mlx_hook(fdf->win, 2, 0, handle_input, fdf);
 	mlx_loop(fdf->mlx);
 	return (1);
 }

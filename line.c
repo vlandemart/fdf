@@ -18,7 +18,7 @@
 ** input: 2d position on the screen
 */
 
-void	output_line(t_vector_2_int p0, t_vector_2_int p1,
+void	output_line(t_vector3 p0, t_vector3 p1,
 					t_fdf *fdf, int col1, int col2)
 {
 	int dx = ft_abs(p1.x - p0.x);

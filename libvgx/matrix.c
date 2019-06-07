@@ -13,9 +13,9 @@
 #include "libvgx.h"
 #include <math.h>
 
-t_vector_3	matrix_multiply_vector(t_mat4x4 m, t_vector_3 v)
+t_vector3	matrix_multiply_vector(t_mat4x4 m, t_vector3 v)
 {
-	t_vector_3	result;
+	t_vector3	result;
 	float		w;
 
 	result.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0] + m.m[3][0];
@@ -24,8 +24,9 @@ t_vector_3	matrix_multiply_vector(t_mat4x4 m, t_vector_3 v)
 	w = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + m.m[3][3];
 	if (w != 0.0f)
 	{
-		result = ft_vector_3_divide_f(result, w);
+		result = vector3_divide_f(result, w);
 	}
+	result.color = v.color;
 	return (result);
 }
 
@@ -41,7 +42,7 @@ t_mat4x4	matrix_identity(void)
 	return (mat);
 }
 
-t_mat4x4	matrix_rotation_x(float angle_rad)
+t_mat4x4	matrix_rot_x(float angle_rad)
 {
 	t_mat4x4 mat_rot;
 
@@ -55,21 +56,21 @@ t_mat4x4	matrix_rotation_x(float angle_rad)
 	return (mat_rot);
 }
 
-t_mat4x4	matrix_rotation_y(float angle_rad)
+t_mat4x4	matrix_rot_y(float angle_rad)
 {
 	t_mat4x4 mat_rot;
 
 	ft_bzero(&mat_rot, sizeof(t_mat4x4));
 	mat_rot.m[0][0] = cosf(angle_rad);
-	mat_rot.m[1][1] = sinf(angle_rad);
-	mat_rot.m[1][2] = -sinf(angle_rad);
-	mat_rot.m[2][1] = 1.0f;
+	mat_rot.m[2][0] = sinf(angle_rad);
+	mat_rot.m[0][2] = -sinf(angle_rad);
+	mat_rot.m[1][1] = 1.0f;
 	mat_rot.m[2][2] = cosf(angle_rad);
 	mat_rot.m[3][3] = 1.0f;
 	return (mat_rot);
 }
 
-t_mat4x4	matrix_rotation_z(float angle_rad)
+t_mat4x4	matrix_rot_z(float angle_rad)
 {
 	t_mat4x4 mat_rot;
 

@@ -24,7 +24,8 @@ size_t	ft_strillen(const char *s, char c, char i)
 		if (s[n] != i)
 		{
 			sum++;
-			n++;
+			while (s[n] && s[n] != c && s[n] != i)
+				n++;
 		}
 		while (s[n] && s[n] != c && s[n] == i)
 			n++;

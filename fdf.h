@@ -27,19 +27,20 @@ typedef struct	s_fdf
 	void		*win;
 	void		*img_main;
 	int			*img_data;
-	t_vector_3	map_pos;
-	t_vector_3	map_rot;
-	t_vector_3	*vertices;
+	t_vector3	map_pos;
+	t_vector3	map_rot;
+	t_vector3	*vertices;
 	int			vertices_count;
-	t_vector_3	*vertices_to_draw;
+	t_vector3	*vertices_to_draw;
 	int			map_h;
 	int			map_w;
+	int			iso;
 }				t_fdf;
 
 
 void			read_map(char *map_name, t_fdf *fdf);
 void			ft_image_put_pixel(t_fdf *fdf, int x, int y, int color);
-void			output_line(t_vector_2_int p0, t_vector_2_int p1,
+void			output_line(t_vector3 p0, t_vector3 p1,
 							t_fdf *fdf, int col1, int col2);
 
 #endif

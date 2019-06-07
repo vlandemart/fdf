@@ -12,7 +12,7 @@
 
 #include "libvgx.h"
 
-void	print_v3(t_vector_3 v3, int debug_lvl)
+void	print_v3(t_vector3 v3, int debug_lvl)
 {
 	if (debug_lvl < DEBUG_LEVEL)
 		return ;
@@ -58,29 +58,6 @@ void	print_matrix(t_mat4x4 m, int debug_lvl)
 		i++;
 	}
 	ft_putendl("");
-}
-
-void	print_triangle_v2int(t_vector_2_int pos1, t_vector_2_int pos2,
-								t_vector_2_int pos3, int debug_lvl)
-{
-	if (debug_lvl < DEBUG_LEVEL)
-		return ;
-	ft_putstr("(");
-	ft_putnbr(pos1.x);
-	ft_putstr(":");
-	ft_putnbr(pos1.y);
-	ft_putstr(") ");
-	ft_putstr("(");
-	ft_putnbr(pos2.x);
-	ft_putstr(":");
-	ft_putnbr(pos2.y);
-	ft_putstr(") ");
-	ft_putstr("(");
-	ft_putnbr(pos3.x);
-	ft_putstr(":");
-	ft_putnbr(pos3.y);
-	ft_putstr(") ");
-	ft_putendl(" #");
 }
 
 void	print_array(int **arr, int h, int w, int debug_lvl)
