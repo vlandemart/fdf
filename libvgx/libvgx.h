@@ -17,6 +17,8 @@
 # define DEBUG_LEVEL 2
 
 # include "../libft/libft.h"
+# include <stdlib.h>
+# include <math.h>
 
 typedef struct	s_vector3
 {
@@ -79,4 +81,11 @@ void			debug_array(int **arr, int h, int w, int debug_lvl);
 void			debug_array_element(int **arr, int i, int j, int debug_lvl);
 void			debug_str(char *str, int debug_lvl);
 void			debug_nbr(int nbr, int debug_lvl);
+
+/*
+** math stuff
+*/
+
+uint32_t		hex2int(char *hex);
+float			percent(float start, float end, float current);
 #endif

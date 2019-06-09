@@ -13,7 +13,6 @@
 #ifndef FDF_H
 # define FDF_H
 
-//# include "mlx.h"
 # include "libvgx/libvgx.h"
 # include "minilibx/mlx.h"
 # include "math.h"
@@ -37,10 +36,25 @@ typedef struct	s_fdf
 	int			iso;
 }				t_fdf;
 
+typedef struct	s_line
+{
+	int dx;
+	int dy;
+	int sx;
+	int sy;
+	int err;
+	int e2;
+}				t_line;
 
 void			read_map(char *map_name, t_fdf *fdf);
 void			ft_image_put_pixel(t_fdf *fdf, int x, int y, int color);
-void			output_line(t_vector3 p0, t_vector3 p1,
-							t_fdf *fdf, int col1, int col2);
+void			output_line(t_vector3 p0, t_vector3 p1, t_fdf *fdf);
+t_mat4x4		calc_proj(void);
+void			ft_clear_image(t_fdf *fdf);
+void			project_vertices(t_fdf *fdf);
+void			project_vector(t_vector3 *v3, t_fdf *fdf);
+void			iso(t_vector3 *v3);
+void			draw_vertices(t_fdf *fdf);
+void			output_fdf(t_vector3 v1, t_vector3 v2, t_fdf *fdf);
 
 #endif

@@ -12,26 +12,6 @@
 
 #include "fdf.h"
 
-uint32_t	hex2int(char *hex)
-{
-	uint32_t	val;
-	uint8_t		byte;
-
-	val = 0;
-	while (*hex)
-	{
-		byte = *hex++;
-		if (byte >= '0' && byte <= '9')
-			byte = byte - '0';
-		else if (byte >= 'a' && byte <= 'f')
-			byte = byte - 'a' + 10;
-		else if (byte >= 'A' && byte <= 'F')
-			byte = byte - 'A' + 10;
-		val = (val << 4) | (byte & 0xF);
-	}
-	return (val);
-}
-
 int			ft_getnbr(char *str, t_vector3 *v3)
 {
 	int		i;
@@ -59,6 +39,18 @@ int			ft_getnbr(char *str, t_vector3 *v3)
 	return (i);
 }
 
+int			compose_ext(int *i, int *j, char **map, t_fdf fdf)
+{
+	while (**map != '\n')
+		*map += 1;
+	*map += 1;
+	if (*i + 1 == fdf.map_h)
+		return (-1);
+	*i += 1;
+	*j = 0;
+	return (0);
+}
+
 void		compose_map(char *map, t_fdf *fdf)
 {
 	int				i;
@@ -71,18 +63,11 @@ void		compose_map(char *map, t_fdf *fdf)
 	while (*map != '\0')
 	{
 		while (*map == ' ')
-		{
 			map++;
-		}
 		if (*map == '\n' || j >= fdf->map_w)
 		{
-			while (*map != '\n')
-				map++;
-			map++;
-			if (i + 1 == fdf->map_h)
+			if (compose_ext(&i, &j, &map, *fdf) == -1)
 				break ;
-			i++;
-			j = 0;
 			continue;
 		}
 		v3->x = j;

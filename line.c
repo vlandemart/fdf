@@ -15,35 +15,33 @@
 
 /*
 ** draws a line on 2d screen
-** input: 2d position on the screen
+** input: 2 vectors with (int)xy screen position
 */
 
-void	output_line(t_vector3 p0, t_vector3 p1,
-					t_fdf *fdf, int col1, int col2)
+void	output_line(t_vector3 p0, t_vector3 p1, t_fdf *fdf)
 {
-	int dx = ft_abs(p1.x - p0.x);
-	int dy = ft_abs(p1.y - p0.y);
-	int sx = p0.x < p1.x ? 1 : -1;
-	int sy = p0.y < p1.y ? 1 : -1;
-	int err = (dx > dy ? dx : -dy) / 2;
-	int e2;
+	t_line line;
 
+	line.dx = ft_abs(p1.x - p0.x);
+	line.dy = ft_abs(p1.y - p0.y);
+	line.sx = p0.x < p1.x ? 1 : -1;
+	line.sy = p0.y < p1.y ? 1 : -1;
+	line.err = (line.dx > line.dy ? line.dx : -line.dy) / 2;
 	while (1)
 	{
-		ft_image_put_pixel(fdf, p0.x, p0.y, col1);
-		col2 = 0;
+		ft_image_put_pixel(fdf, p0.x, p0.y, p0.color);
 		if (p0.x == p1.x && p0.y == p1.y)
 			break ;
-		e2 = err;
-		if (e2 > -dx)
+		line.e2 = line.err;
+		if (line.e2 > -line.dx)
 		{
-			err -= dy;
-			p0.x += sx;
+			line.err -= line.dy;
+			p0.x += line.sx;
 		}
-		if (e2 < dy)
+		if (line.e2 < line.dy)
 		{
-			err += dx;
-			p0.y += sy;
+			line.err += line.dx;
+			p0.y += line.sy;
 		}
 	}
 }
