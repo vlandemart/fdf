@@ -19,7 +19,6 @@ int			ft_getnbr(char *str, t_vector3 *v3)
 	int		*l;
 
 	i = 0;
-	l = ft_memalloc(sizeof(int));
 	v3->z = ft_atoi(str);
 	while (ft_isalnum(*str))
 	{
@@ -28,11 +27,13 @@ int			ft_getnbr(char *str, t_vector3 *v3)
 	}
 	if (*str == ',')
 	{
+		l = ft_memalloc(sizeof(int));
 		str++;
 		hex = ft_strcutc(str, 8, l);
 		i += *l + 1;
 		v3->color = (int)hex2int(hex);
 		free(hex);
+		free(l);
 	}
 	else
 		v3->color = 0xFFFFFF;
