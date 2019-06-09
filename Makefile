@@ -10,7 +10,7 @@
 #                                                                              #
 #******************************************************************************#
 
-NAME		= cube3d
+NAME		= fdf
 CFLAGS		= -o1 -o2 -o3 -Wall -Werror -Wextra
 FILES		= *.c
 LIBMLX		= ./minilibx -lmlx
