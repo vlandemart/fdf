@@ -36,8 +36,10 @@ int			ft_getnbr(char *str, t_vector3 *v3)
 {
 	int		i;
 	char	*hex;
+	int		*l;
 
 	i = 0;
+	l = ft_memalloc(sizeof(int));
 	v3->z = ft_atoi(str);
 	while (ft_isalnum(*str))
 	{
@@ -47,8 +49,8 @@ int			ft_getnbr(char *str, t_vector3 *v3)
 	if (*str == ',')
 	{
 		str++;
-		hex = ft_strcut(str, 8);
-		i += 9;
+		hex = ft_strcutc(str, 8, l);
+		i += *l + 1;
 		v3->color = (int)hex2int(hex);
 		free(hex);
 	}
@@ -68,10 +70,9 @@ void		compose_map(char *map, t_fdf *fdf)
 	v3 = ft_memalloc(sizeof(t_vector3));
 	while (*map != '\0')
 	{
-		if (*map == ' ')
+		while (*map == ' ')
 		{
 			map++;
-			continue;
 		}
 		if (*map == '\n' || j >= fdf->map_w)
 		{

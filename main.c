@@ -176,9 +176,9 @@ int			handle_input(int key, t_fdf *fdf)
 		key == 88 || key == 83 || key == 85)
 		s = -1;
 	if (key == 123 || key == 124)
-		vector3_add_v3_p(&fdf->map_pos, vector3_new(1 * s, 0, 0));
+		vector3_add_v3_p(&fdf->map_pos, vector3_new(5 * s, 0, 0));
 	if (key == 126 || key == 125)
-		vector3_add_v3_p(&fdf->map_pos, vector3_new(0, 1 * s, 0));
+		vector3_add_v3_p(&fdf->map_pos, vector3_new(0, 5 * s, 0));
 	if (key == 12 || key == 14)
 		vector3_add_v3_p(&fdf->map_pos, vector3_new(0, 0, 10 * s));
 	if (key == 91 || key == 84)

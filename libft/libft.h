@@ -60,6 +60,7 @@ char				*ft_strnstr(const char *haystack,
 int					ft_strcmp(const char *s1, const char *s2);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
 char				*ft_strcut(char *str, int n);
+char				*ft_strcutc(char *str, int n, int *len);
 char				*ft_strnew(size_t size);
 void				ft_strdel(char **as);
 int					ft_strdeli(char **as);
