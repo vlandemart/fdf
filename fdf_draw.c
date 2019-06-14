@@ -25,10 +25,6 @@ void		output_fdf(t_vector3 v1, t_vector3 v2, t_fdf *fdf)
 	debug_str(" ### ", -2);
 	debug_v3(v2, -2);
 	debug_str("\n", -2);
-	if (pos1.x < 0 || pos1.y < 0 || pos2.x < 0 || pos2.y < 0 ||
-		pos1.x > SCREEN_W || pos2.x > SCREEN_W ||
-		pos1.y > SCREEN_H || pos2.y > SCREEN_H)
-		return ;
 	output_line(pos1, pos2, fdf);
 }
 
@@ -68,20 +64,29 @@ void		iso(t_vector3 *v3)
 
 	prev_x = v3->x;
 	prev_y = v3->y;
-	v3->x = (prev_x - prev_y) * cos(0.523599);
-	v3->y = -v3->z + (prev_x + prev_y) * sin(0.523599);
+	v3->x = (prev_x + prev_y) * cos(0.523599);
+	v3->y = (prev_x - prev_y) * sin(0.523599) - v3->z;
 }
 
 void		project_vector(t_vector3 *v3, t_fdf *fdf)
 {
-	*v3 = matrix_multiply_vector(matrix_rot_z(fdf->map_rot.z), *v3);
-	*v3 = matrix_multiply_vector(matrix_rot_x(fdf->map_rot.x), *v3);
-	*v3 = matrix_multiply_vector(matrix_rot_y(fdf->map_rot.y), *v3);
+	fdf->map_pos.z = (fdf->map_pos.z < 1) ? 1 : fdf->map_pos.z;
+	fdf->map_pos.z = (fdf->map_pos.z > 90) ? 90 : fdf->map_pos.z;
+	*v3 = vector3_multiply_f(*v3, fdf->map_pos.z);
+	fdf->z_zoom = fdf->z_zoom <= .5 ? .5 : fdf->z_zoom;
+	fdf->z_zoom = fdf->z_zoom > 5 ? 5 : fdf->z_zoom;
+	v3->z /= fdf->z_zoom;
+	v3->z *= -1;
+	*v3 = vector3_add_v3(*v3, vector3_new(fdf->map_w / 2, fdf->map_h / 2, 0));
+	if (fdf->iso == 0)
+	{
+		v3_rotate_x(v3, *fdf);
+		v3_rotate_y(v3, *fdf);
+		v3_rotate_z(v3, *fdf);
+	}
 	*v3 = vector3_add_v3(*v3, fdf->map_pos);
-	*v3 = matrix_multiply_vector(calc_proj(), *v3);
-	*v3 = vector3_add_v3(*v3, vector3_new(1, 1, 0));
-	*v3 = vector3_multiply_v3(*v3,
-		vector3_new(0.5f * (float)SCREEN_W, 0.5 * SCREEN_H, 1));
+	*v3 = vector3_add_v3(*v3, vector3_new(0.5f * (float)SCREEN_W,
+							0.5f * (float)SCREEN_H, 0));
 }
 
 void		project_vertices(t_fdf *fdf)
@@ -103,8 +108,6 @@ void		project_vertices(t_fdf *fdf)
 		while (++j < fdf->map_w)
 		{
 			v3 = vertecies[i * fdf->map_w + j];
-			if (fdf->iso)
-				iso(&v3);
 			project_vector(&v3, fdf);
 			fdf->vertices_to_draw[i * fdf->map_w + j] = v3;
 		}

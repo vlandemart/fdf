@@ -17,6 +17,8 @@ void	ft_image_put_pixel(t_fdf *fdf, int x, int y, int color)
 {
 	int	pos;
 
+	if (x < 0 || y < 0 || x > SCREEN_W || y > SCREEN_H)
+		return ;
 	pos = x + y * SCREEN_W;
 	if (pos >= SCREEN_W * SCREEN_H || pos < 0)
 		return ;

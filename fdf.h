@@ -34,6 +34,7 @@ typedef struct	s_fdf
 	int			map_h;
 	int			map_w;
 	int			iso;
+	float		z_zoom;
 }				t_fdf;
 
 typedef struct	s_line
@@ -56,5 +57,8 @@ void			project_vector(t_vector3 *v3, t_fdf *fdf);
 void			iso(t_vector3 *v3);
 void			draw_vertices(t_fdf *fdf);
 void			output_fdf(t_vector3 v1, t_vector3 v2, t_fdf *fdf);
+void			v3_rotate_x(t_vector3 *v3, t_fdf fdf);
+void			v3_rotate_y(t_vector3 *v3, t_fdf fdf);
+void			v3_rotate_z(t_vector3 *v3, t_fdf fdf);
 
 #endif
